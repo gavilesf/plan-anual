@@ -42,18 +42,6 @@ function App() {
   const [dialogText, setDialogText] = React.useState("");
   const [weekItems, setWeekItems] = React.useState<any[]>([]);
 
-  // React.useEffect(() => {
-  //   if (weekNumber !== null && plan.length > 0 &&weekNumber>=1 && weekNumber<=53 ) {
-  //     const startIndex = (weekNumber - 1) * 7;
-  //     const endIndex = startIndex + 7;
-  //     const items = plan.slice(startIndex, endIndex);
-  //     setWeekItems(items);
-  //     console.log("Week items updated:", items);
-  //   } else {
-  //     setWeekItems([]);
-  //   }
-  // }, [weekNumber]);
-
   React.useEffect(() => {
     const fetchedPlan = getPlan();
     setPlan(fetchedPlan);
