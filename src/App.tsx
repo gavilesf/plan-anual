@@ -199,7 +199,7 @@ const AppHeader: React.FC = () => (
       <div>
         <a className="mx-2 my-1 flex items-center lg:mb-0 lg:mt-0" href="#">
           <img src={Logo} style={{ height: 70 }} loading="lazy" />
-          <span className="text-violet-900 text-lg sm:text-sm md:text-base lg:text-lg xl:text-xl">
+          <span className="text-violet-900 font-bold text-lg sm:text-sm md:text-base lg:text-lg xl:text-xl">
             Casa De Dios Ags. Méx.
           </span>
         </a>
