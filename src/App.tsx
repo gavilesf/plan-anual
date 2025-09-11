@@ -13,7 +13,7 @@ function getPlan() {
   }
 
   let data: any[] = PLAN_DATA;
-  const ordered = data.plan.sort(
+  const ordered = data.sort(
     (a: { id: string }, b: { id: string }) => parseInt(a.id) - parseInt(b.id)
   );
   savePlan(ordered);
@@ -165,7 +165,7 @@ function WeekInput({
   return (
     <input
       type="number"
-      className="border w-16 border-gray-300 rounded py-2 px-4 focus:outline-none text-right text-lg sm:text-sm md:text-base lg:text-lg xl:text-xl"
+      className="border max-w-2xl border-gray-300 rounded py-2 px-4 focus:outline-none text-right text-lg sm:text-sm md:text-base lg:text-lg xl:text-xl"
       onChange={onInputChange}
       placeholder="Número de semana"
     />
