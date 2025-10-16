@@ -1,54 +1,72 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Logo from "./assets/logo.svg";
-import { PLAN_DATA } from "./assets/main_plan.js";
-// const apiUrl = import.meta.env.VITE_API_URL;
-// const appApiKey = import.meta.env.VITE_APP_API_KEY;
 
-function getPlan() {
-  let temp = loadPlan();
-  if (temp.length > 0) {
-    console.log("Plan loaded from local storage:", temp);
-    return temp;
-  }
-
-  let data: any[] = PLAN_DATA;
-  const ordered = data.sort(
-    (a: { id: string }, b: { id: string }) => parseInt(a.id) - parseInt(b.id)
-  );
-  savePlan(ordered);
-
-  console.log("Success:", ordered);
-  return ordered;
-}
-
-function savePlan(plan: any) {
-  localStorage.setItem("plan", JSON.stringify(plan));
-}
-
-function loadPlan() {
-  const plan = localStorage.getItem("plan");
-  if (plan) {
-    return JSON.parse(plan);
-  }
-  return [];
-}
 
 function App() {
-  const [selectedWeekNumber, setSelectedWeekNumber] = React.useState<number | null>(null);
-  const [showingWeekNumber, setShowingWeekNumber] = React.useState<number | null>(null);
+  /**/
+  function getPlan() {
+    let temp = loadPlan();
+    if (temp.length > 0) {
+      return temp;
+    }
+
+    let data: any[] = s3Data;
+    const ordered = data.sort(
+      (a: { id: string }, b: { id: string }) => parseInt(a.id) - parseInt(b.id)
+    );
+    savePlan(ordered);
+    return ordered;
+  }
+
+  function savePlan(plan: any) {
+    localStorage.setItem("plan", JSON.stringify(plan));
+  }
+
+  function loadPlan() {
+    const plan = localStorage.getItem("plan");
+    if (plan) {
+      return JSON.parse(plan);
+    }
+    return [];
+  }
+  /**/
+  const [s3Data, setS3Data] = React.useState<any[]>([]);
+  const [selectedWeekNumber, setSelectedWeekNumber] = React.useState<
+    number | null
+  >(null);
+  const [showingWeekNumber, setShowingWeekNumber] = React.useState<
+    number | null
+  >(null);
   const [plan, setPlan] = React.useState<any[]>([]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [dialogText, setDialogText] = React.useState("");
   const [weekItems, setWeekItems] = React.useState<any[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchedPlan = getPlan();
     setPlan(fetchedPlan);
+  }, [s3Data]);
+
+  React.useEffect(() => {
+    let localP = loadPlan();
+
+    if (localP.length > 0) {
+      setPlan(localP);
+      return;
+    }
+
+    fetch(
+      "https://gaf7012-public-ro.s3.us-east-2.amazonaws.com/main_plan_minified.js"
+    )
+      .then((response) => response.json())
+      .then((jsonData) => {
+        setS3Data(jsonData);
+      })
+      .catch((error) => console.error("Error loading JSON:", error));
   }, []);
 
   function onButtonClick(value: string) {
-    console.log(value);
     if (selectedWeekNumber === null) {
       setDialogText("Número de semana no válido.");
       setDialogOpen(true);
@@ -116,7 +134,10 @@ function App() {
             </h2>
           )}
         </div>
-        <WeekTable weekItems={weekItems} visible={selectedWeekNumber !== null} />
+        <WeekTable
+          weekItems={weekItems}
+          visible={selectedWeekNumber !== null}
+        />
       </div>
       <Footer />
     </>
